@@ -5,10 +5,14 @@ Node modules are not included in the course files. After download, run npm insta
 
 - npm i -g nodemon create-react-app
 
-start: 
+start server: 
 - cd server/
 - nodemon app
 - open browser localhost:4000/graphiql
+
+start client:
+- cd client/
+- npm start
 
 technology:
 - reactjs
