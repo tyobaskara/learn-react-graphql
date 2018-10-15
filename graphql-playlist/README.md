@@ -13,5 +13,5 @@ start:
 technology:
 - reactjs
 - express
-- mongodb mlab
+- mongodb mlab (admin/admin123)
 - graphql
