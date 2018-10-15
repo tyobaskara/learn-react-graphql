@@ -22,6 +22,7 @@ const BookType = new GraphQLObjectType({
             type: AuthorType,
             resolve(parent, args) {
                 //return _.find(authors, { id: parent.authorId });
+                return Author.findById(parent.authorId);
             }
         }
     })
@@ -37,6 +38,7 @@ const AuthorType = new GraphQLObjectType({
             type: new GraphQLList(BookType),
             resolve(parent, args) {
                 //return _.filter(books, { authorId: parent.id });
+                return Book.find({ authorId: parent.id });
             }
         }
     })
@@ -51,6 +53,22 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent, args) {
                 // code to get data from db / other source
                 // return _.find(books, { id: args.id });
+                
+                // QUERY
+                // localhost:4000/graphiql
+                // {
+                //     book(id: "5bc41bef0d7d1e1b148c9356"){
+                //         name
+                //         genre
+                //         author{
+                //             name
+                //             books{
+                //                 name
+                //             }
+                //         }
+                //     }
+                // }
+                return Book.findById(args.id);
             }
         },
         author: {
@@ -58,23 +76,40 @@ const RootQuery = new GraphQLObjectType({
             args: { id: { type: GraphQLID } },
             resolve(parent, args) {
                 // return _.find(authors, { id: args.id });
+                return Author.findById(args.id);
             }
         },
         books: {
             type: new GraphQLList(BookType),
-            resolve(parent,args) {
+            resolve(parent, args) {
                 // return books;
+                
+                // QUERY
+                // localhost:4000/graphiql
+                // {
+                //     books{
+                //         name
+                //         genre
+                //         author{
+                //             name
+                //             age
+                //         }
+                //     }
+                // }
+                return Book.find({});
             }
         },
         authors: {
             type: new GraphQLList(AuthorType),
-            resolve(parent,args) {
+            resolve(parent, args) {
                 // return authors;
+                return Author.find({});
             }
         }
     }
 });
 
+// MUTATION
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
@@ -90,11 +125,42 @@ const Mutation = new GraphQLObjectType({
                     age: args.age
                 });
                 
+                // localhost:4000/graphiql
+                // mutation {
+                //     addAuthor(name: "Aji", age: "28") {
+                //         name
+                //         age
+                //     }
+                // }
                 return author.save();
+            }
+        },
+        addBook: {
+            type: BookType,
+            args: {
+                name: { type: GraphQLString },
+                genre: { type: GraphQLString },
+                authorId: { type: GraphQLID }
+            },
+            resolve(parent, args) {
+                let book = new Book({
+                    name: args.name,
+                    genre: args.genre,
+                    authorId: args.authorId
+                });
+                
+                // localhost:4000/graphiql
+                // mutation {
+                //     addBook(name: "The Name of the Wind", genre: "Fantasy", authorId: "5bc41a6bea47123e8427709c") {
+                //         name
+                //         genre
+                //     }
+                // }
+                return book.save();
             }
         }
     }
-})
+});
 
 module.exports = new GraphQLSchema({
     query: RootQuery,
