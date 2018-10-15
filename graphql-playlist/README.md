@@ -3,7 +3,7 @@ All course files for the GraphQL tutorial playlist on The Net Ninja YouTube chan
 
 Node modules are not included in the course files. After download, run npm install to install the modules (client and server folders)
 
-- npm i -g nodemon
+- npm i -g nodemon create-react-app
 
 start: 
 - cd server/
